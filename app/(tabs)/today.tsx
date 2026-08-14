@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { getTodayTasks, isCompletedToday } from '../../lib/today';
 import { sortTasksCompletedLast } from '../../lib/selectors';
@@ -15,7 +16,7 @@ export default function TodayScreen() {
   const todayTasks = sortTasksCompletedLast(getTodayTasks(tasks));
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen} edges={['top']}>
       <Text style={styles.header}>Today</Text>
       {todayTasks.length === 0 ? (
         <EmptyState
@@ -44,7 +45,7 @@ export default function TodayScreen() {
           }}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

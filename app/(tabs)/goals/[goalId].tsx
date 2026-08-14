@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../../store/useAppStore';
 import { getTasksForGoal, sortTasksCompletedLast } from '../../../lib/selectors';
 import { isCompletedToday } from '../../../lib/today';
@@ -20,7 +21,7 @@ export default function GoalDetailScreen() {
   const goalTasks = sortTasksCompletedLast(getTasksForGoal(tasks, goal.id));
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen} edges={['top']}>
       <Text style={styles.header}>
         {goal.icon} {goal.name}
       </Text>
@@ -46,7 +47,7 @@ export default function GoalDetailScreen() {
       <Pressable onPress={() => router.push(`/task/new?goalId=${goal.id}`)} style={styles.fab}>
         <Text style={styles.fabText}>+</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../../store/useAppStore';
 import { getTasksForGoal } from '../../../lib/selectors';
 import { isCompletedToday } from '../../../lib/today';
@@ -14,18 +15,18 @@ export default function GoalsListScreen() {
 
   if (goals.length === 0) {
     return (
-      <View style={styles.screen}>
+      <SafeAreaView style={styles.screen} edges={['top']}>
         <EmptyState
           title="No Big Goals yet"
           message="Start with one life area you'd like a little more ease in."
         />
         <Fab onPress={() => router.push('/goal/new')} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen} edges={['top']}>
       <Text style={styles.header}>Goals</Text>
       <FlatList
         data={goals}
@@ -44,7 +45,7 @@ export default function GoalsListScreen() {
         }}
       />
       <Fab onPress={() => router.push('/goal/new')} />
-    </View>
+    </SafeAreaView>
   );
 }
 
