@@ -1,7 +1,15 @@
 .superpowers/
+.claude/
 
 # dependencies
 node_modules/
+
+# test coverage
+coverage/
+
+# env files
+.env
+.env*.local
 
 # Expo
 .expo/
@@ -29,9 +37,6 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
-
-# local env files
-.env*.local
 
 # typescript
 *.tsbuildinfo
