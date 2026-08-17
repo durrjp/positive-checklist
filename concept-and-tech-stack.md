@@ -8,11 +8,13 @@ A free iOS app where you build genuine self-worth by completing goals so small t
 
 ## Core mechanics
 
-**Big Goals → Small Tasks.** The user creates a handful of Big Goals (life areas: "Be a better friend," "Keep the house livable," "Move my body more"). Under each, they add Tiny Tasks — deliberately sized small enough to feel almost trivial. The app should actively coach users toward *smaller* tasks, not bigger ones; this is the whole differentiator from standard to-do/project-management apps.
+> **Update, 2026-08-17:** the app is now branded **"Little Wins"** (this repo folder's name, `positive-checklist`, predates the rebrand and is left as-is). Also, the "Big Goals → Tiny Tasks" hierarchy described below was the Phase 1 model and has been superseded. The app now uses **flat daily goals only** — scoped to "today" or "tomorrow," no persistent parent goal, no recurring/day-of-week scheduling. The reasoning: a persistent Big Goal container risked exactly the failure mode this app is meant to prevent — getting lost in a big, vague goal and losing track of what to actually do today. See `docs/superpowers/specs/2026-08-17-daily-goals-refactor-design.md` for the current data model, screens, and rationale. The original Big Goals section is kept below for history.
+
+**Big Goals → Small Tasks** *(superseded — see note above)*. The user creates a handful of Big Goals (life areas: "Be a better friend," "Keep the house livable," "Move my body more"). Under each, they add Tiny Tasks — deliberately sized small enough to feel almost trivial. The app should actively coach users toward *smaller* tasks, not bigger ones; this is the whole differentiator from standard to-do/project-management apps.
 
 **Completion is the reward.** Every checkbox tap should feel good on its own — a satisfying animation, a sound, a streak tick — independent of any points system. The gamification layer (below) reinforces this but shouldn't be required for the core loop to feel good.
 
-**Categorization, not deadlines.** Unlike project management tools, there's no due-date pressure. Tasks live under their Big Goal and get completed whenever. Consider a lightweight "today" surface (a short list pulled from across goals) so the app still gives daily structure without becoming a task-anxiety machine.
+**Categorization, not deadlines** *(superseded — see note above; goals are now dated, not categorized)*. Unlike project management tools, there's no due-date pressure. Tasks live under their Big Goal and get completed whenever. Consider a lightweight "today" surface (a short list pulled from across goals) so the app still gives daily structure without becoming a task-anxiety machine.
 
 ## Gamification ideas
 
