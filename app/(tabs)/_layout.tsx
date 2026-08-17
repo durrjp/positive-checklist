@@ -12,6 +12,7 @@ export default function TabsLayout() {
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}
     >
+      <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="goals"
         options={{ title: 'Goals', tabBarIcon: () => <Text style={{ fontSize: 18 }}>🎯</Text> }}

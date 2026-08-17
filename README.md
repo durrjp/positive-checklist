@@ -41,12 +41,16 @@ tab). Either:
 
 ## If you see "Unmatched Route" / a blank "page could not be found" screen
 
-This is Expo Router's own fallback screen for a URL it couldn't match — try,
-in order:
-1. A hard refresh (Ctrl+Shift+R) — stale cached JS is the most common cause.
-2. Go straight to `http://localhost:8081/` (no extra path) rather than a
-   deep link.
-3. Restart the dev server with a cleared cache: `npx expo start --web -c`.
+Make sure the dev server is actually still running (`curl -I
+http://localhost:8081/` from another terminal) — if it crashed, the browser
+just shows a stale page and refreshing won't help; restart it with `npx expo
+start --web -c`.
+
+If the server is healthy and you still see it, it's most likely that
+`app/(tabs)/` is missing a route for the bare `/` path. Web routing is
+URL-driven (unlike native, which just opens the first tab), so there must be
+an `app/(tabs)/index.tsx` that resolves `/`, e.g. redirecting into the
+default tab with `<Redirect href="/goals" />`.
 
 ## Tests
 
