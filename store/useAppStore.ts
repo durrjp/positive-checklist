@@ -1,85 +1,50 @@
 import { create } from 'zustand';
 import { generateId } from '../lib/id';
-import { isSameLocalDay } from '../lib/date';
-import { CompletionEvent, DayOfWeek, Goal, Task } from './types';
+import { DailyGoal } from './types';
 
 interface AddGoalInput {
-  name: string;
-  color: string;
-  icon: string;
-}
-
-interface AddTaskInput {
-  goalId: string;
   text: string;
-  scheduledDays: DayOfWeek[] | null;
+  emoji: string | null;
+  forDate: string;
 }
 
 interface AppState {
-  goals: Goal[];
-  tasks: Task[];
-  completions: CompletionEvent[];
-  addGoal: (input: AddGoalInput) => Goal;
-  addTask: (input: AddTaskInput) => Task;
-  completeTask: (taskId: string) => void;
-  uncompleteTask: (taskId: string) => void;
+  dailyGoals: DailyGoal[];
+  addGoal: (input: AddGoalInput) => DailyGoal;
+  completeGoal: (id: string) => void;
+  uncompleteGoal: (id: string) => void;
 }
 
-export const useAppStore = create<AppState>()((set, get) => ({
-  goals: [],
-  tasks: [],
-  completions: [],
+export const useAppStore = create<AppState>()((set) => ({
+  dailyGoals: [],
 
   addGoal: (input) => {
-    const goal: Goal = {
+    const goal: DailyGoal = {
       id: generateId(),
-      name: input.name,
-      color: input.color,
-      icon: input.icon,
+      text: input.text,
+      emoji: input.emoji,
+      forDate: input.forDate,
       createdAt: new Date().toISOString(),
+      completedAt: null,
     };
-    set((state) => ({ goals: [...state.goals, goal] }));
+    set((state) => ({ dailyGoals: [...state.dailyGoals, goal] }));
     return goal;
   },
 
-  addTask: (input) => {
-    const task: Task = {
-      id: generateId(),
-      goalId: input.goalId,
-      text: input.text,
-      createdAt: new Date().toISOString(),
-      scheduledDays: input.scheduledDays,
-      lastCompletedAt: null,
-    };
-    set((state) => ({ tasks: [...state.tasks, task] }));
-    return task;
-  },
-
-  completeTask: (taskId) => {
-    const now = new Date();
-    const task = get().tasks.find((t) => t.id === taskId);
-    if (!task || (task.lastCompletedAt && isSameLocalDay(task.lastCompletedAt, now))) {
-      return;
-    }
-    const nowIso = now.toISOString();
-    const event: CompletionEvent = {
-      id: generateId(),
-      taskId: task.id,
-      goalId: task.goalId,
-      completedAt: nowIso,
-    };
+  completeGoal: (id) => {
     set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, lastCompletedAt: nowIso } : t)),
-      completions: [...state.completions, event],
+      dailyGoals: state.dailyGoals.map((goal) =>
+        goal.id === id && !goal.completedAt
+          ? { ...goal, completedAt: new Date().toISOString() }
+          : goal
+      ),
     }));
   },
 
-  uncompleteTask: (taskId) => {
-    const now = new Date();
+  uncompleteGoal: (id) => {
     set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, lastCompletedAt: null } : t)),
-      completions: state.completions.filter(
-        (c) => !(c.taskId === taskId && isSameLocalDay(c.completedAt, now))
+      dailyGoals: state.dailyGoals.map((goal) =>
+        goal.id === id ? { ...goal, completedAt: null } : goal
       ),
     }));
   },

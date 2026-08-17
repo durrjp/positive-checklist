@@ -1,25 +1,8 @@
-export type DayOfWeek = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
-
-export interface Goal {
+export interface DailyGoal {
   id: string;
-  name: string;
-  color: string;
-  icon: string;
-  createdAt: string;
-}
-
-export interface Task {
-  id: string;
-  goalId: string;
   text: string;
-  createdAt: string;
-  scheduledDays: DayOfWeek[] | null;
-  lastCompletedAt: string | null;
-}
-
-export interface CompletionEvent {
-  id: string;
-  taskId: string;
-  goalId: string;
-  completedAt: string;
+  emoji: string | null;
+  forDate: string; // local date string, e.g. "2026-08-17" — the only scheduling concept
+  createdAt: string; // ISO timestamp
+  completedAt: string | null; // ISO timestamp; null = not done
 }

@@ -1,53 +1,42 @@
 import { useAppStore } from './useAppStore';
 
 beforeEach(() => {
-  useAppStore.setState({ goals: [], tasks: [], completions: [] });
+  useAppStore.setState({ dailyGoals: [] });
 });
 
 test('addGoal adds a goal with a generated id', () => {
-  const goal = useAppStore.getState().addGoal({ name: 'Be a better friend', color: '#C9B8B0', icon: '🤝' });
-  expect(useAppStore.getState().goals).toHaveLength(1);
-  expect(useAppStore.getState().goals[0]).toEqual(goal);
+  const goal = useAppStore.getState().addGoal({ text: 'Vacuum one room', emoji: '🧹', forDate: '2026-08-17' });
+  expect(useAppStore.getState().dailyGoals).toHaveLength(1);
+  expect(useAppStore.getState().dailyGoals[0]).toEqual(goal);
   expect(goal.id).toBeTruthy();
+  expect(goal.completedAt).toBeNull();
 });
 
-test('addTask adds a task under a goal', () => {
-  const goal = useAppStore.getState().addGoal({ name: 'Move my body more', color: '#B9C4CC', icon: '🚶' });
-  const task = useAppStore.getState().addTask({ goalId: goal.id, text: 'Walk around the block', scheduledDays: null });
-  expect(useAppStore.getState().tasks).toEqual([task]);
-  expect(task.lastCompletedAt).toBeNull();
+test('completeGoal sets completedAt', () => {
+  const goal = useAppStore.getState().addGoal({ text: 'Vacuum one room', emoji: '🧹', forDate: '2026-08-17' });
+
+  useAppStore.getState().completeGoal(goal.id);
+
+  const updated = useAppStore.getState().dailyGoals.find((g) => g.id === goal.id);
+  expect(updated?.completedAt).toBeTruthy();
 });
 
-test('completeTask sets lastCompletedAt and logs a completion event', () => {
-  const goal = useAppStore.getState().addGoal({ name: 'Move my body more', color: '#B9C4CC', icon: '🚶' });
-  const task = useAppStore.getState().addTask({ goalId: goal.id, text: 'Walk around the block', scheduledDays: null });
+test('completeGoal is idempotent — does not overwrite an existing completedAt', () => {
+  const goal = useAppStore.getState().addGoal({ text: 'Vacuum one room', emoji: '🧹', forDate: '2026-08-17' });
 
-  useAppStore.getState().completeTask(task.id);
+  useAppStore.getState().completeGoal(goal.id);
+  const firstCompletedAt = useAppStore.getState().dailyGoals[0].completedAt;
+  useAppStore.getState().completeGoal(goal.id);
 
-  const updated = useAppStore.getState().tasks.find((t) => t.id === task.id);
-  expect(updated?.lastCompletedAt).toBeTruthy();
-  expect(useAppStore.getState().completions).toHaveLength(1);
-  expect(useAppStore.getState().completions[0].taskId).toBe(task.id);
+  expect(useAppStore.getState().dailyGoals[0].completedAt).toBe(firstCompletedAt);
 });
 
-test('completeTask is idempotent for the same day', () => {
-  const goal = useAppStore.getState().addGoal({ name: 'Move my body more', color: '#B9C4CC', icon: '🚶' });
-  const task = useAppStore.getState().addTask({ goalId: goal.id, text: 'Walk around the block', scheduledDays: null });
+test('uncompleteGoal clears completedAt', () => {
+  const goal = useAppStore.getState().addGoal({ text: 'Vacuum one room', emoji: '🧹', forDate: '2026-08-17' });
+  useAppStore.getState().completeGoal(goal.id);
 
-  useAppStore.getState().completeTask(task.id);
-  useAppStore.getState().completeTask(task.id);
+  useAppStore.getState().uncompleteGoal(goal.id);
 
-  expect(useAppStore.getState().completions).toHaveLength(1);
-});
-
-test('uncompleteTask clears lastCompletedAt and removes the completion event', () => {
-  const goal = useAppStore.getState().addGoal({ name: 'Move my body more', color: '#B9C4CC', icon: '🚶' });
-  const task = useAppStore.getState().addTask({ goalId: goal.id, text: 'Walk around the block', scheduledDays: null });
-  useAppStore.getState().completeTask(task.id);
-
-  useAppStore.getState().uncompleteTask(task.id);
-
-  const updated = useAppStore.getState().tasks.find((t) => t.id === task.id);
-  expect(updated?.lastCompletedAt).toBeNull();
-  expect(useAppStore.getState().completions).toHaveLength(0);
+  const updated = useAppStore.getState().dailyGoals.find((g) => g.id === goal.id);
+  expect(updated?.completedAt).toBeNull();
 });

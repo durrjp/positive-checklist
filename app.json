@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Positive Checklist",
-    "slug": "positive-checklist",
+    "name": "Little Wins",
+    "slug": "little-wins",
     "version": "1.0.0",
-    "scheme": "positivechecklist",
+    "scheme": "littlewins",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

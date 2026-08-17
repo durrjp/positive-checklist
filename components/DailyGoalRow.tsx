@@ -3,25 +3,20 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { Audio } from 'expo-av';
-import { colors, getGoalColorShade } from '../theme/colors';
+import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
-import { Goal, Task } from '../store/types';
-import { isCompletedToday } from '../lib/today';
-import { DAY_LABELS } from './DayPicker';
+import { DailyGoal } from '../store/types';
 import { ConfettiBurst } from './ConfettiBurst';
 
-interface TaskRowProps {
-  task: Task;
-  goal: Goal;
-  showGoalLabel?: boolean;
+interface DailyGoalRowProps {
+  goal: DailyGoal;
   onToggle: () => void;
 }
 
-export function TaskRow({ task, goal, showGoalLabel = false, onToggle }: TaskRowProps) {
-  const done = isCompletedToday(task);
+export function DailyGoalRow({ goal, onToggle }: DailyGoalRowProps) {
+  const done = goal.completedAt !== null;
   const scale = useSharedValue(1);
   const [showConfetti, setShowConfetti] = useState(false);
-  const shade = getGoalColorShade(goal.color);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -42,27 +37,21 @@ export function TaskRow({ task, goal, showGoalLabel = false, onToggle }: TaskRow
   };
 
   return (
-    <View style={styles.row}>
-      <Pressable onPress={handlePress} hitSlop={8}>
-        <Animated.View
-          style={[styles.checkbox, { borderColor: shade }, done && { backgroundColor: shade }, animatedStyle]}
-        >
-          {done && <Text style={styles.checkmark}>✓</Text>}
-        </Animated.View>
-      </Pressable>
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+    >
+      <Animated.View style={[styles.checkbox, done && styles.checkboxDone, animatedStyle]}>
+        {done && <Text style={styles.checkmark}>✓</Text>}
+      </Animated.View>
       <View style={styles.textColumn}>
-        <Text style={[styles.taskText, done && styles.taskTextDone]}>{task.text}</Text>
-        {showGoalLabel && (
-          <Text style={[styles.goalLabel, { color: shade }]}>
-            {goal.icon} {goal.name}
-          </Text>
-        )}
-        {!showGoalLabel && task.scheduledDays && task.scheduledDays.length > 0 && (
-          <Text style={styles.dayBadge}>{task.scheduledDays.map((d) => DAY_LABELS[d]).join(', ')}</Text>
-        )}
+        <Text style={[styles.goalText, done && styles.goalTextDone]}>
+          {goal.emoji ? `${goal.emoji} ` : ''}
+          {goal.text}
+        </Text>
       </View>
       {showConfetti && <ConfettiBurst onDone={() => setShowConfetti(false)} />}
-    </View>
+    </Pressable>
   );
 }
 
@@ -92,16 +81,24 @@ const styles = StyleSheet.create({
     padding: 11,
     marginBottom: 10,
   },
-  checkbox: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  rowPressed: { opacity: 0.7 },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxDone: { backgroundColor: colors.accent },
   checkmark: { color: colors.surface, fontSize: 13 },
   textColumn: { flex: 1 },
-  taskText: { ...typography.body, color: colors.textPrimary },
-  taskTextDone: {
+  goalText: { ...typography.body, color: colors.textPrimary },
+  goalTextDone: {
     color: colors.textSecondary,
     textDecorationLine: 'line-through',
     textDecorationColor: colors.strikethrough,
     opacity: 0.55,
   },
-  goalLabel: { ...typography.caption, marginTop: 2 },
-  dayBadge: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
 });

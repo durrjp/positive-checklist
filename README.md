@@ -1,8 +1,12 @@
-# Positive Checklist
+# Little Wins
 
-Phase 1 MVP prototype — Big Goals, Tiny Tasks, and the completion interaction.
-See `concept-and-tech-stack.md` for the full concept and
-`docs/superpowers/specs/2026-08-14-phase1-mvp-ui-ux-design.md` for the design spec.
+*(project repo name: `positive-checklist` — the app itself is branded "Little Wins")*
+
+A daily-goals prototype: plan a few small things for today or tomorrow, check
+them off, feel good doing it. See `concept-and-tech-stack.md` for the original
+concept and `docs/superpowers/specs/2026-08-17-daily-goals-refactor-design.md`
+for the current design (the earlier "Big Goals / Tiny Tasks" spec is
+superseded — see the note at the top of the concept doc).
 
 ## Running it
 
@@ -46,11 +50,11 @@ http://localhost:8081/` from another terminal) — if it crashed, the browser
 just shows a stale page and refreshing won't help; restart it with `npx expo
 start --web -c`.
 
-If the server is healthy and you still see it, it's most likely that
-`app/(tabs)/` is missing a route for the bare `/` path. Web routing is
-URL-driven (unlike native, which just opens the first tab), so there must be
-an `app/(tabs)/index.tsx` that resolves `/`, e.g. redirecting into the
-default tab with `<Redirect href="/goals" />`.
+If the server is healthy and you still see it, it's most likely that some
+route directory is missing a file that resolves the bare `/` path. Web
+routing is URL-driven (unlike native), so every navigator needs an explicit
+route mapped to its own root, or visiting that path renders Expo Router's
+Unmatched Route fallback even though native works fine.
 
 ## Tests
 
@@ -65,7 +69,7 @@ npx tsc --noEmit   # typecheck
 app/            Expo Router screens (file-based routing)
 components/     Reusable UI components
 store/          Zustand store + data types
-lib/            Pure logic: date/today/selector helpers
+lib/            Pure logic: date + daily-goal derived-state helpers
 theme/          Colors ("Muted Earth" palette) and typography tokens
 scripts/        One-off asset-generation scripts (e.g. the tap sound)
 ```

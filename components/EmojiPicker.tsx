@@ -1,26 +1,30 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 
-export const GOAL_ICON_OPTIONS = [
+export const EMOJI_OPTIONS = [
   '🏡', '🤝', '🚶', '💪', '🧘', '🎨', '📚', '💰',
   '🌱', '🐾', '✍️', '🍳', '🧹', '💤', '🌿', '✨',
 ];
 
-interface IconPickerProps {
-  value: string;
-  onChange: (icon: string) => void;
+interface EmojiPickerProps {
+  value: string | null;
+  onChange: (emoji: string) => void;
 }
 
-export function IconPicker({ value, onChange }: IconPickerProps) {
+export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
   return (
     <View style={styles.grid}>
-      {GOAL_ICON_OPTIONS.map((icon) => (
+      {EMOJI_OPTIONS.map((emoji) => (
         <Pressable
-          key={icon}
-          onPress={() => onChange(icon)}
-          style={[styles.cell, icon === value && styles.selected]}
+          key={emoji}
+          onPress={() => onChange(emoji)}
+          style={({ pressed }) => [
+            styles.cell,
+            emoji === value && styles.selected,
+            pressed && styles.pressed,
+          ]}
         >
-          <Text style={styles.emoji}>{icon}</Text>
+          <Text style={styles.emoji}>{emoji}</Text>
         </Pressable>
       ))}
     </View>
@@ -40,5 +44,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   selected: { borderColor: colors.accent, borderWidth: 2 },
-  emoji: { fontSize: 20 },
+  pressed: { opacity: 0.6 },
+  emoji: { fontSize: 22 },
 });
